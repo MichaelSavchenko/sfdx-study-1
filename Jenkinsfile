@@ -32,17 +32,34 @@ node {
             if (rc != 0) { error 'hub org authorization failed' }
 
 			println rc
-			
-			// need to pull out assigned username
-			if (isUnix()) {
-				rmsg = sh returnStdout: true, script: "${toolbelt} force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
-			}else{
-			   rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
-			}
-			  
-            printf rmsg
-            println('Hello from a Job DSL script!')
-            println(rmsg)
+        }
+
+        stage('Create Test Scratch Org') {
+                rc = command "${toolbelt}/sfdx force:org:create --targetdevhubusername ${HUB_ORG} --setdefaultusername --definitionfile config/project-scratch-def.json --setalias ciorg --wait 10 --durationdays 1"
+                if (rc != 0) {
+                    error 'Salesforce test scratch org creation failed.'
+                }
+        }
+
+        stage('Push To Test Scratch Org') {
+                rc = command "${toolbelt}/sfdx force:source:push --targetusername ciorg"
+                if (rc != 0) {
+                     error 'Salesforce push to test scratch org failed.'
+                }
+        }
+
+        stage('Run Tests In Test Scratch Org') {
+                rc = command "${toolbelt}/sfdx force:apex:test:run --targetusername ciorg --wait 10 --resultformat tap --codecoverage --testlevel ${TEST_LEVEL}"
+                if (rc != 0) {
+                    error 'Salesforce unit test run in test scratch org failed.'
+                }
+        
+        
+        stage('Delete Package Install Scratch Org') {
+                rc = command "${toolbelt}/sfdx force:org:delete --targetusername installorg --noprompt"
+                if (rc != 0) {
+                    error 'Salesforce package install scratch org deletion failed.'
+                }
         }
     }
 }

@@ -26,7 +26,7 @@ node {
         stage('Auth') {
             if (isUnix()) {
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} -d --instanceurl ${SFDC_HOST} --setalias HubOrg --setdefaultdevhubusername"
-                rc = command "${toolbelt}/sfdx force:org:list"
+                rc = sh returnStatus: true, script: "${toolbelt}/sfdx force:org:list"
 
                 println rc
             }else{

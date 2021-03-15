@@ -26,7 +26,7 @@ node {
         stage('Auth') {
             if (isUnix()) {
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} -d --instanceurl ${SFDC_HOST} --setalias HubOrg --setdefaultdevhubusername"
-                rc = sh returnStatus: true, script: "${toolbelt}/sfdx force:org:list"
+                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:list"
 
                 println rc
             }else{
@@ -38,7 +38,7 @@ node {
         }
 
         stage('Create Test Scratch Org') {
-                rc = sh returnStatus: true, script: "${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
+                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
                 if (rc != 0) {
                     println rc
                     error 'Salesforce test scratch org creation failed.'

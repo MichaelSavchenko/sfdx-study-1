@@ -46,7 +46,7 @@ node {
         }
 
         stage('Push To Test Scratch Org') {
-                rc = command "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:push --targetusername ciorg"
+                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:push --targetusername ciorg"
                 if (rc != 0) {
                      println rc
                      error 'Salesforce push to test scratch org failed.'
@@ -54,7 +54,7 @@ node {
         }
 
         stage('Run Tests In Test Scratch Org') {
-                rc = command "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:apex:test:run --targetusername ciorg --wait 10 --resultformat tap --codecoverage --testlevel ${TEST_LEVEL}"
+                rc = rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:apex:test:run --targetusername ciorg --wait 10 --resultformat tap --codecoverage --testlevel ${TEST_LEVEL}"
                 if (rc != 0) {
                      println rc
                     error 'Salesforce unit test run in test scratch org failed.'
@@ -62,7 +62,7 @@ node {
         }
         
         stage('Delete Package Install Scratch Org') {
-                rc = command "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete --targetusername installorg --noprompt"
+                rc = rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete --targetusername installorg --noprompt"
                 if (rc != 0) {
                      println rc
                     error 'Salesforce package install scratch org deletion failed.'

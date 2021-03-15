@@ -1,34 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@MichaelSavchenko 
-amit-salesforce
-/
-SFDXProject
-0
-1101
-Code
-Issues
-Pull requests
-5
-Actions
-Projects
-Wiki
-Security
-Insights
-SFDXProject/Jenkinsfile
-
-Chaudhary Fixed:
-Latest commit 47ff36c on Jan 26, 2019
- History
- 0 contributors
-49 lines (41 sloc)  1.76 KB
-  
 #!groovy
 import groovy.json.JsonSlurperClassic
 node {

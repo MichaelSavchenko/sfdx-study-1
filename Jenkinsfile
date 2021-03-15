@@ -6,10 +6,10 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
-    def HUB_ORG=env.HUB_ORG
-    def SFDC_HOST = env.SFDC_HOST
-    def JWT_KEY_CRED_ID = env.JWT_KEY_FILE
-    def CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY
+    def HUB_ORG=credentials("HUB_ORG")
+    def SFDC_HOST = credentials("SFDC_HOST")
+    def JWT_KEY_CRED_ID = credentials("JWT_KEY_FILE")
+    def CONNECTED_APP_CONSUMER_KEY=credentials("CONNECTED_APP_CONSUMER_KEY")
 
     println 'KEY IS' 
     println JWT_KEY_CRED_ID

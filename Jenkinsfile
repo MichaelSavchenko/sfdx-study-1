@@ -53,7 +53,7 @@ node {
                 if (rc != 0) {
                     error 'Salesforce unit test run in test scratch org failed.'
                 }
-        
+        }
         
         stage('Delete Package Install Scratch Org') {
                 rc = command "${toolbelt}/sfdx force:org:delete --targetusername installorg --noprompt"

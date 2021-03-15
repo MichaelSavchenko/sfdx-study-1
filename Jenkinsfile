@@ -1,3 +1,34 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@MichaelSavchenko 
+amit-salesforce
+/
+SFDXProject
+0
+1101
+Code
+Issues
+Pull requests
+5
+Actions
+Projects
+Wiki
+Security
+Insights
+SFDXProject/Jenkinsfile
+
+Chaudhary Fixed:
+Latest commit 47ff36c on Jan 26, 2019
+ History
+ 0 contributors
+49 lines (41 sloc)  1.76 KB
+  
 #!groovy
 import groovy.json.JsonSlurperClassic
 node {
@@ -6,10 +37,10 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
-    def HUB_ORG=credentials("HUB_ORG")
-    def SFDC_HOST = credentials("SFDC_HOST")
-    def JWT_KEY_CRED_ID = credentials("JWT_KEY_FILE")
-    def CONNECTED_APP_CONSUMER_KEY=credentials("CONNECTED_APP_CONSUMER_KEY")
+    def HUB_ORG ='michaelsav4enko@playful-goat-wb8z0r.com'
+    def SFDC_HOST = 'https://login.salesforce.com'
+    def JWT_KEY_CRED_ID = 'JWT_KEY_FILE'
+    def CONNECTED_APP_CONSUMER_KEY = '3MVG91BJr_0ZDQ4swvCaW48wcrDDYHizUkJMbuJGzQXeYnSXGD3oVZwWI8130BOJ3sxKYXfdU5z_wme.yqs6t'
 
     println 'KEY IS' 
     println JWT_KEY_CRED_ID

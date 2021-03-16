@@ -39,7 +39,7 @@ node {
         }
 
         stage('Create Test Scratch Org') {
-                if (${BRANCH} == 'production') {
+                if (BRANCH == 'production') {
                     rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
                     if (rc != 0) {
                         println rc

@@ -33,7 +33,7 @@ node {
                 println rc
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:auth:jwt:grant --clientid ${SANBOX_CONNECTED_APP_CONSUMER_KEY} --username ${SANBOX_ORG} --jwtkeyfile ${jwt_key_file} -d --instanceurl ${SFDC_HOST} -a SandBoxOrg"
                 println rc
-                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:deploy -m ApexClass -u SandBoxOrg"
+                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:deploy -p force-app -u SandBoxOrg"
                 println rc
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:list"
                 println rc
@@ -46,7 +46,7 @@ node {
         }
 
         stage('Create Test Scratch Org') {
-                if (BRANCH == 'master') {
+                if (BRANCH != 'master') {
                     rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
                     if (rc != 0) {
                         println rc

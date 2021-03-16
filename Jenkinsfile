@@ -14,10 +14,6 @@ node {
         CONNECTED_APP_CONSUMER_KEY = credentials('CONNECTED_APP_CONSUMER_KEY')
     }
 
-    println 'KEY IS' 
-    println $HUB_ORG
-    println $SFDC_HOST
-    println $CONNECTED_APP_CONSUMER_KEY
     def toolbelt = tool 'sfdx'
 
     stage('checkout source') {

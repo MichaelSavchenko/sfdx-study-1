@@ -1,5 +1,12 @@
-public with sharing class AccountSearchControllerTest {
-    public AccountSearchControllerTest() {
-
+@isTest
+public class AccountSearchControllerTest {
+    
+    
+    static void methodName(){
+        
+        Test.startTest();
+        
+        Test.stopTest();
+        
     }
 }

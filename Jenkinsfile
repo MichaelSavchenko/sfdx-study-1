@@ -7,9 +7,12 @@ node {
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
-    def HUB_ORG ="michaelsav4enko@playful-goat-wb8z0r.com"
-    def SFDC_HOST = "https://login.salesforce.com"
-    def CONNECTED_APP_CONSUMER_KEY = "3MVG91BJr_0ZDQ4swvCaW48wcrDDYHizUkJMbuJGzQXeYnSXGD3oVZwWI8130BOJ3sxKYXfdU5z_wme.yqs6t"
+
+    environment {
+        HUB_ORG = credentials('HUB_ORG')
+        SFDC_HOST = credentials('SFDC_HOST')
+        CONNECTED_APP_CONSUMER_KEY = credentials('CONNECTED_APP_CONSUMER_KEY')
+    }
 
     println 'KEY IS' 
     println HUB_ORG
@@ -38,6 +41,9 @@ node {
         }
 
         stage('Create Test Scratch Org') {
+                when {
+                    branch 'production'  
+                }
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
                 if (rc != 0) {
                     println rc
@@ -46,6 +52,9 @@ node {
         }
 
         stage('Push To Test Scratch Org') {
+                when {
+                        branch 'production'  
+                    }
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:push --targetusername ciorg"
                 if (rc != 0) {
                      println rc
@@ -56,6 +65,10 @@ node {
         }
 
         stage('Run Tests In Test Scratch Org') {
+                when {
+                    branch 'production'  
+                }
+
                 rc = rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:apex:test:run --targetusername ciorg --wait 10 --resultformat tap --codecoverage"
                 if (rc != 0) {
                      println rc
@@ -66,6 +79,10 @@ node {
         }
         
         stage('Delete Package Install Scratch Org') {
+
+                when {
+                        branch 'production'  
+                    }
                 rc= sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete -u ciorg --noprompt"
                 if (rc != 0) {
                      println rc

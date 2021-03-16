@@ -4,6 +4,7 @@ node {
 
 
     def BUILD_NUMBER=env.BUILD_NUMBER
+    def BRANCH=env.BRANCH_NAME
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
@@ -38,20 +39,18 @@ node {
         }
 
         stage('Create Test Scratch Org') {
-                when {
-                    branch 'production'  
+                if (${BRANCH} == 'production') {
+                    rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
+                    if (rc != 0) {
+                        println rc
+                        error 'Salesforce test scratch org creation failed.'
+                    }
                 }
-                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
-                if (rc != 0) {
-                    println rc
-                    error 'Salesforce test scratch org creation failed.'
-                }
+
         }
 
-        stage('Push To Test Scratch Org') {
-                when {
-                        branch 'production'  
-                    }
+        /*stage('Push To Test Scratch Org') {
+               
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:push --targetusername ciorg"
                 if (rc != 0) {
                      println rc
@@ -62,9 +61,7 @@ node {
         }
 
         stage('Run Tests In Test Scratch Org') {
-                when {
-                    branch 'production'  
-                }
+               
 
                 rc = rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:apex:test:run --targetusername ciorg --wait 10 --resultformat tap --codecoverage"
                 if (rc != 0) {
@@ -77,14 +74,12 @@ node {
         
         stage('Delete Package Install Scratch Org') {
 
-                when {
-                        branch 'production'  
-                    }
+               
                 rc= sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete -u ciorg --noprompt"
                 if (rc != 0) {
                      println rc
                     error 'Salesforce package install scratch org deletion failed.'
                 }
-        }
+        }*/
     }
 }

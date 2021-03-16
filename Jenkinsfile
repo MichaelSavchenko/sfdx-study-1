@@ -12,6 +12,9 @@ node {
     def SFDC_HOST = "https://login.salesforce.com"
     def CONNECTED_APP_CONSUMER_KEY = "3MVG91BJr_0ZDQ4swvCaW48wcrDDYHizUkJMbuJGzQXeYnSXGD3oVZwWI8130BOJ3sxKYXfdU5z_wme.yqs6t"
 
+    def SANBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
+    def SANBOX_ORG"michaelsav4enko@resourceful-wolf-e390ul.com"
+
     println 'KEY IS' 
     println HUB_ORG
     println SFDC_HOST
@@ -27,8 +30,10 @@ node {
         stage('Auth') {
             if (isUnix()) {
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} -d --instanceurl ${SFDC_HOST} --setalias HubOrg --setdefaultdevhubusername"
+                println rc
+                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:auth:jwt:grant --clientid ${SANBOX_CONNECTED_APP_CONSUMER_KEY} --username ${SANBOX_ORG} --jwtkeyfile ${jwt_key_file} -d --instanceurl ${SFDC_HOST} -a SandBoxOrg"
+                println rc
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:list"
-
                 println rc
             }else{
                  rc = bat returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"

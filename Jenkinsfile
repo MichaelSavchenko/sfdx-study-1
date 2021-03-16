@@ -15,9 +15,9 @@ node {
     }
 
     println 'KEY IS' 
-    println env.HUB_ORG
-    println env.SFDC_HOST
-    println env.CONNECTED_APP_CONSUMER_KEY
+    println $HUB_ORG
+    println $SFDC_HOST
+    println $CONNECTED_APP_CONSUMER_KEY
     def toolbelt = tool 'sfdx'
 
     stage('checkout source') {

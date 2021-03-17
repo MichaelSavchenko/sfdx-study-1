@@ -9,7 +9,6 @@ pipeline {
         jwt_key_file = credentials('SERVER_KEY')
         DEV_HUB_ALIAS = "DEV_HUB"
         SCRATCH_ORG_ALIAS = 'Scratch-$BUILD_NUMBER'
-        scratchOrgCreated = false
 
         SANDBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
         SANDBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
@@ -24,14 +23,9 @@ pipeline {
          stage('Login') {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
-
-                script{
-                    scratchOrgCreated = true
-                }
             }
         }
 
-/*
         stage('Create Scratch Org') {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
@@ -43,7 +37,7 @@ pipeline {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 --resultformat tap --codecoverage'
             }
-        } */
+        }
 
         stage('Deploy to SandBox') {
             when {
@@ -60,11 +54,7 @@ pipeline {
     post {
         always {
             script {
-                if (scratchOrgCreated == true) {
-                    sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
-                } else {
-                    sh 'echo no scratch Org was created'
-                }
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
             }
         }
     }

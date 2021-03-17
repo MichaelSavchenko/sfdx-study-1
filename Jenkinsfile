@@ -14,6 +14,10 @@ pipeline {
         SANBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
     }
 
+    options {
+        timeout(time:30, unit: "MINUTES")
+    }
+
     stages {
         stage('Login') {
             steps {

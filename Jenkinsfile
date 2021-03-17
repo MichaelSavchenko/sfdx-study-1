@@ -20,7 +20,7 @@ pipeline {
     }
 
     stages {
-        stage('Login') {
+        /* stage('Login') {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
             }
@@ -37,15 +37,17 @@ pipeline {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 --resultformat tap --codecoverage'
             }
-        }
+        } */
 
         stage('Deploy to SandBox') {
             when {
-                branch 'master'
+                branch 'test_on_sandbox'
             }
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $SANDBOX_CONNECTED_APP_CONSUMER_KEY --username $SANDBOX_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $SANDBOX_ALIAS'
-                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:source:deploy -p force-app -u $SANDBOX_ALIAS'}
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:source:deploy -p force-app -u $SANDBOX_ALIAS'
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:apex:test:run -u $SANDBOX_ALIAS --classnames AccountSearchControllerTest --wait 10 --resultformat tap --codecoverage'
+            }
         }
     }
 

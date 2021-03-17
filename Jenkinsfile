@@ -27,12 +27,12 @@ pipeline {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
             }
         }
+    }
 
-        post {
-                always {
-                    sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS'
-                }
-            }
+    post {
+        always {
+            sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS'
+        }
     }
 }
 

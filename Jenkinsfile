@@ -7,6 +7,8 @@ pipeline {
         SFDC_HOST = credentials('SFDC_HOST')
         CONNECTED_APP_CONSUMER_KEY = credentials('CONNECTED_APP_CONSUMER_KEY')
         jwt_key_file = credentials('SERVER_KEY')
+        DEV_HUB_ALIAS = "DEV_HUB"
+        SCRATCH_ORG_ALIAS = 'Scratch-' + BUILD_NUMBER
 
         SANBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
         SANBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
@@ -15,10 +17,22 @@ pipeline {
     stages {
         stage('Login') {
             steps {
-                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST --setalias HubOrg --setdefaultdevhubusername'
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $SANBOX_CONNECTED_APP_CONSUMER_KEY --username $SANBOX_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a SandBoxOrg'
             }
         }
+
+        stage('Create Scratch Org') {
+            steps {
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
+            }
+        }
+
+        post {
+                always {
+                    sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS'
+                }
+            }
     }
 }
 

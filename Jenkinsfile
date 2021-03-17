@@ -34,7 +34,7 @@ pipeline {
 
         stage('Run tests on Scratch Org') {
             steps {
-                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --wait 10 --resultformat tap --codecoverage'
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 --resultformat tap --codecoverage'
             }
         }
     }

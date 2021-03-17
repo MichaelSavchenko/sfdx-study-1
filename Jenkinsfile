@@ -10,8 +10,9 @@ pipeline {
         DEV_HUB_ALIAS = "DEV_HUB"
         SCRATCH_ORG_ALIAS = 'Scratch-$BUILD_NUMBER'
 
-        SANBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
-        SANBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
+        SANDBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
+        SANDBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
+        SANDBOX_ALIAS = "SandBoxOrg"
     }
 
     options {
@@ -22,13 +23,13 @@ pipeline {
         stage('Login') {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
-                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $SANBOX_CONNECTED_APP_CONSUMER_KEY --username $SANBOX_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a SandBoxOrg'
             }
         }
 
         stage('Create Scratch Org') {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:source:push -u $SCRATCH_ORG_ALIAS'
             }
         }
 
@@ -36,6 +37,14 @@ pipeline {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 --resultformat tap --codecoverage'
             }
+        }
+
+        stage('Deploy to SandBox') {
+            when {
+                branch 'master'
+            }
+            sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $SANDBOX_CONNECTED_APP_CONSUMER_KEY --username $SANDBOX_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $SANDBOX_ALIAS'
+            sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:source:deploy -p force-app -u $SANDBOX_ALIAS'
         }
     }
 

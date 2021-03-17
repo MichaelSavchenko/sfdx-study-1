@@ -1,3 +1,28 @@
+pipeline {
+    agent any
+
+    environment {
+        toolbelt = tool 'sfdx'
+        HUB_ORG = credentials('HUB_ORG')
+        SFDC_HOST = credentials('SFDC_HOST')
+        CONNECTED_APP_CONSUMER_KEY = credentials('CONNECTED_APP_CONSUMER_KEY')
+        jwt_key_file = credentials('SERVER_KEY')
+    }
+
+    stages {
+        stage('Example Build') {
+            steps {
+               sh 'echo $toolbelt'
+               sh 'echo $HUB_ORG'
+               sh 'echo $CONNECTED_APP_CONSUMER_KEY'
+               sh 'echo $jwt_key_file'
+
+            }
+        }
+    }
+}
+
+/*
 #!groovy
 import groovy.json.JsonSlurperClassic
 node {
@@ -55,7 +80,7 @@ node {
 
         }
 
-        /*stage('Push To Test Scratch Org') {
+        stage('Push To Test Scratch Org') {
                
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:push --targetusername ciorg"
                 if (rc != 0) {
@@ -86,6 +111,7 @@ node {
                      println rc
                     error 'Salesforce package install scratch org deletion failed.'
                 }
-        }*/
+        }
     }
 }
+ */

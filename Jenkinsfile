@@ -56,7 +56,7 @@ pipeline {
     post {
         always {
             script {
-                if (scratchOrgCreated) {
+                if (false) {
                     sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
                 } else {
                     sh 'echo no scratch Org was created'

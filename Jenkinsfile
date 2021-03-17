@@ -46,17 +46,17 @@ node {
         }
 
         stage('Create Test Scratch Org') {
-                if (BRANCH != 'master') {
-                    rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
-                    if (rc != 0) {
-                        println rc
-                        error 'Salesforce test scratch org creation failed.'
-                    }
+                
+                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
+                if (rc != 0) {
+                    println rc
+                    error 'Salesforce test scratch org creation failed.'
                 }
+                
 
         }
 
-        /*stage('Push To Test Scratch Org') {
+        stage('Push To Test Scratch Org') {
                
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:push --targetusername ciorg"
                 if (rc != 0) {
@@ -79,14 +79,12 @@ node {
                 }
         }
         
-        stage('Delete Package Install Scratch Org') {
-
-               
+        stage('Delete Scratch Org') {
                 rc= sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete -u ciorg --noprompt"
                 if (rc != 0) {
                      println rc
                     error 'Salesforce package install scratch org deletion failed.'
                 }
-        }*/
+        }
     }
 }

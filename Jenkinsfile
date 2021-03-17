@@ -10,13 +10,10 @@ pipeline {
     }
 
     stages {
-        stage('Example Build') {
+        stage('Login') {
             steps {
-               sh 'echo $toolbelt'
-               sh 'echo $HUB_ORG'
-               sh 'echo $CONNECTED_APP_CONSUMER_KEY'
-               sh 'echo $jwt_key_file'
-
+                rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST --setalias HubOrg --setdefaultdevhubusername"
+                println rc
             }
         }
     }

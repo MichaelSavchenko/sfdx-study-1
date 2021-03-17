@@ -9,6 +9,7 @@ pipeline {
         jwt_key_file = credentials('SERVER_KEY')
         DEV_HUB_ALIAS = "DEV_HUB"
         SCRATCH_ORG_ALIAS = 'Scratch-$BUILD_NUMBER'
+        scratchOrgCreated = false
 
         SANDBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
         SANDBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
@@ -54,9 +55,15 @@ pipeline {
 
     post {
         always {
-            sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
+            script {
+                if (scratchOrgCreated) {
+                    sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
+                } else {
+                    sh 'echo no scratch Org was created'
+                }
+            }
         }
-    }
+
 }
 
 /*
@@ -76,7 +83,7 @@ node {
     def SANBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
     def SANBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
 
-    println 'KEY IS' 
+    println 'KEY IS'
     println HUB_ORG
     println SFDC_HOST
     println CONNECTED_APP_CONSUMER_KEY
@@ -118,7 +125,7 @@ node {
         }
 
         stage('Push To Test Scratch Org') {
-               
+
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:source:push --targetusername ciorg"
                 if (rc != 0) {
                      println rc
@@ -129,7 +136,7 @@ node {
         }
 
         stage('Run Tests In Test Scratch Org') {
-               
+
 
                 rc = rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:apex:test:run --targetusername ciorg --wait 10 --resultformat tap --codecoverage"
                 if (rc != 0) {
@@ -139,10 +146,10 @@ node {
                      println rc
                 }
         }
-        
+
         stage('Delete Package Install Scratch Org') {
 
-               
+
                 rc= sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:delete -u ciorg --noprompt"
                 if (rc != 0) {
                      println rc

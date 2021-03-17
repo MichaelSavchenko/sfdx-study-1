@@ -7,12 +7,16 @@ pipeline {
         SFDC_HOST = credentials('SFDC_HOST')
         CONNECTED_APP_CONSUMER_KEY = credentials('CONNECTED_APP_CONSUMER_KEY')
         jwt_key_file = credentials('SERVER_KEY')
+
+        SANBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
+        SANBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
     }
 
     stages {
         stage('Login') {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST --setalias HubOrg --setdefaultdevhubusername'
+                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $SANBOX_CONNECTED_APP_CONSUMER_KEY --username $SANBOX_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a SandBoxOrg'
             }
         }
     }

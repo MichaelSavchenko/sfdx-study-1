@@ -4,7 +4,6 @@ node {
     //changes in dev
 
     def BUILD_NUMBER=env.BUILD_NUMBER
-    def BRANCH=env.BRANCH_NAME
     def RUN_ARTIFACT_DIR="tests/${BUILD_NUMBER}"
     def SFDC_USERNAME
 
@@ -46,12 +45,13 @@ node {
         }
 
         stage('Create Test Scratch Org') {
+
                 
                 rc = sh returnStatus: true, script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a ciorg --targetdevhubusername HubOrg"
                 if (rc != 0) {
                     println rc
                     error 'Salesforce test scratch org creation failed.'
-                }
+               }
                 
 
         }

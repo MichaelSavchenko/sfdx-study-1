@@ -13,6 +13,7 @@ pipeline {
         SANDBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
         SANDBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
         SANDBOX_ALIAS = "SandBoxOrg"
+        rc = "none"
     }
 
     options {

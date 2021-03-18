@@ -15,8 +15,6 @@ pipeline {
         SANDBOX_ALIAS = "SandBoxOrg"
 
         SFDX_USE_GENERIC_UNIX_KEYCHAIN=true
-
-        rc = "none"
     }
 
     options {
@@ -30,14 +28,18 @@ pipeline {
 
             steps {
                 sh '$toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
-                env.rc = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
+
+                script {
+                    env.rc = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
+                }
+
                 println env.rc
             }
         }
 
         stage('Print') {
             steps {
-                println rc
+                println env.rc
             }
         }
     }

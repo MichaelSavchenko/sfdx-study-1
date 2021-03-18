@@ -30,7 +30,7 @@ pipeline {
 
             steps {
                 sh '$toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
-                def output = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
+                output = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
                 println output
 
                 withEnv(["rc=${output}"])

@@ -31,7 +31,9 @@ pipeline {
         }
 
         stage('Print') {
-            println rc
+            steps {
+                println rc
+            }
         }
     }
 

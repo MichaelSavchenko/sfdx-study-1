@@ -26,7 +26,7 @@ pipeline {
         stage('Login') {
 
             environment {
-               rc = sh(script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true ${toolbelt}/sfdx force:org:list", returnStdout: true)
+               rc = sh(script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:list", returnStdout: true)
             }
 
             steps {

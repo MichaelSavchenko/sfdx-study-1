@@ -13,6 +13,9 @@ pipeline {
         SANDBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
         SANDBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
         SANDBOX_ALIAS = "SandBoxOrg"
+
+        USE_GENERIC_KEYCHAIN = "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true"
+
         rc = "none"
     }
 
@@ -26,11 +29,11 @@ pipeline {
         stage('Login') {
 
             environment {
-               rc = sh(script: "SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:list", returnStdout: true)
+               rc = sh(script: "$USE_GENERIC_KEYCHAIN $toolbelt/sfdx force:org:list", returnStdout: true)
             }
 
             steps {
-                sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
+                sh '$USE_GENERIC_KEYCHAIN $toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
                 println rc
             }
         }

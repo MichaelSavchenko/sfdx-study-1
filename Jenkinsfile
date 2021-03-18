@@ -29,7 +29,7 @@ pipeline {
         stage('Login') {
 
             environment {
-               rc = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
+               rc = "yes"
             }
 
             steps {

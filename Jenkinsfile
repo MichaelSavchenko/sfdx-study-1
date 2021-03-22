@@ -42,6 +42,10 @@ pipeline {
             steps {
                 sh '$toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
                 sh '$toolbelt/sfdx force:source:push -u $SCRATCH_ORG_ALIAS'
+
+                script {
+                    env.scratchCreated = true
+                }
             }
         }
 
@@ -72,8 +76,12 @@ pipeline {
                         recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
                         subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
 
-            sh '$toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
-            sh '$toolbelt/sfdx force:org:list --clean --noprompt'
+            script {
+                if (env.scratchCreated.toBoolean()) {
+                    sh '$toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
+                    sh '$toolbelt/sfdx force:org:list --clean --noprompt'
+                }
+            }
         }
     }
 }

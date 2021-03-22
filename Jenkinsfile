@@ -23,7 +23,6 @@ pipeline {
 
     stages {
 
-
         stage('Login') {
 
             steps {
@@ -32,26 +31,26 @@ pipeline {
                 script {
                     env.rc = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
                 }
-
-                println env.rc
             }
         }
 
-        stage('Print') {
-            steps {
-                println env.rc
+        stage('Create Scratch Org') {
+            when {
+                not { branch 'master' }
             }
-        }
-    }
 
-      /*   stage('Create Scratch Org') {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:source:push -u $SCRATCH_ORG_ALIAS'
             }
         }
 
+
         stage('Run tests on Scratch Org') {
+            when {
+                 not { branch 'master' }
+            }
+
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 --resultformat tap --codecoverage'
             }
@@ -64,14 +63,18 @@ pipeline {
             steps {
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:auth:jwt:grant --clientid $SANDBOX_CONNECTED_APP_CONSUMER_KEY --username $SANDBOX_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $SANDBOX_ALIAS'
                 sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:source:deploy -p force-app -u $SANDBOX_ALIAS'}
-        } */
-    //}
+        }
+    }
 
-    /* post {
+    post {
         always {
+            emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
+                        recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
+                        subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+
             sh 'SFDX_USE_GENERIC_UNIX_KEYCHAIN=true $toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
         }
-    } */
+    }
 }
 
 /*

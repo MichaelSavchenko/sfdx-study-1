@@ -8,7 +8,7 @@ pipeline {
         CONNECTED_APP_CONSUMER_KEY = credentials('CONNECTED_APP_CONSUMER_KEY')
         jwt_key_file = credentials('SERVER_KEY')
         DEV_HUB_ALIAS = "DEV_HUB"
-        SCRATCH_ORG_ALIAS = 'Scratch-${BUILD_NUMBER}'
+
 
         SANDBOX_CONNECTED_APP_CONSUMER_KEY = "3MVG9SOw8KERNN09M7AOhaoDIcn0y_XCchfUzTCsnEb2Q7I.m.A7uWS44uZGStTb6DZFgNnL6jENMlt2IjqQO"
         SANDBOX_ORG = "michaelsav4enko@resourceful-wolf-e390ul.com"
@@ -26,11 +26,9 @@ pipeline {
         stage('Login') {
 
             steps {
-                sh 'echo $SCRATCH_ORG_ALIAS'
-
-                sh '$toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
-
                 script {
+                    def SCRATCH_ORG_ALIAS = 'Scratch-${BUILD_NUMBER}'
+                    sh '$toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
                     env.rc = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
                 }
             }

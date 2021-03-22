@@ -15,8 +15,6 @@ pipeline {
         SANDBOX_ALIAS = "SandBoxOrg"
 
         SFDX_USE_GENERIC_UNIX_KEYCHAIN=true
-
-        scratchCreated = false;
     }
 
     options {
@@ -42,8 +40,8 @@ pipeline {
             }
 
             steps {
-                sh '$toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
-                sh '$toolbelt/sfdx force:source:push -u $SCRATCH_ORG_ALIAS'
+                //sh '$toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
+                //sh '$toolbelt/sfdx force:source:push -u $SCRATCH_ORG_ALIAS'
 
                 script {
                     env.scratchCreated = true
@@ -79,7 +77,7 @@ pipeline {
                         subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
 
             script {
-                if (env.scratchCreated.toBoolean()) {
+                if (env.scratchCreated && env.scratchCreated.toBoolean()) {
                     sh '$toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
                     sh '$toolbelt/sfdx force:org:list --clean --noprompt'
                 }

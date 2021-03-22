@@ -31,7 +31,7 @@ pipeline {
                     sh 'echo $SCRATCH_ORG_ALIAS'
                     sh '$toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'
                     env.rc = sh(script: "$toolbelt/sfdx force:org:list", returnStdout: true)
-                }"
+                }
             }
         }
 

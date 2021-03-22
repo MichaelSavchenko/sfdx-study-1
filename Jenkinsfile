@@ -73,7 +73,7 @@ pipeline {
                         subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
 
             sh '$toolbelt/sfdx force:org:delete -u $SCRATCH_ORG_ALIAS --noprompt'
-            sh '$toolbelt/force:org:list --clean'
+            sh '$toolbelt/sfdx force:org:list --clean'
         }
     }
 }

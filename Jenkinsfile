@@ -15,6 +15,8 @@ pipeline {
         SANDBOX_ALIAS = "SandBoxOrg"
 
         SFDX_USE_GENERIC_UNIX_KEYCHAIN=true
+
+        scratchCreated = false;
     }
 
     options {

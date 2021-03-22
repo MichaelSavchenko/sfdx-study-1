@@ -40,8 +40,8 @@ pipeline {
             }
 
             steps {
-                //sh '$toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
-                //sh '$toolbelt/sfdx force:source:push -u $SCRATCH_ORG_ALIAS'
+                sh '$toolbelt/sfdx force:org:create --setdefaultusername -f config/project-scratch-def.json -a $SCRATCH_ORG_ALIAS  --targetdevhubusername $DEV_HUB_ALIAS'
+                sh '$toolbelt/sfdx force:source:push -u $SCRATCH_ORG_ALIAS'
 
                 script {
                     env.scratchCreated = true

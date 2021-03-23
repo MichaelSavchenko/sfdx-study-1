@@ -5,7 +5,7 @@ public class AccountSearchControllerTest {
     static void methodName(){
         Test.startTest();
         List<SObject> result = AccountSearchController.searchAccounts('test');
-        System.assert(!result.isEmpty(), 'message');
+        System.assert(result.isEmpty(), 'message');
         Test.stopTest();
     }
 }

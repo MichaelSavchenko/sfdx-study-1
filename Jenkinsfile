@@ -38,7 +38,9 @@ pipeline {
 
         stage('Create Scratch Org') {
             when {
-                not { branch 'master' }
+                expression {
+                    "${BRANCHBRANCH_NAME}" =! 'master' || "${CHANGE_BRANCH}" != 'master'
+                }
             }
 
             steps {
@@ -54,7 +56,9 @@ pipeline {
 
         stage('Run tests on Scratch Org') {
             when {
-                 not { branch 'master' }
+                 expression {
+                     "${BRANCHBRANCH_NAME}" =! 'master' || "${CHANGE_BRANCH}" != 'master'
+                 }
             }
 
             steps {

@@ -60,7 +60,7 @@ pipeline {
         stage('Run tests on Scratch Org') {
             when {
                  expression {
-                     BRANCH_NAME =! 'master' || CHANGE_BRANCH != 'master'
+                     !(BRANCH_NAME == 'master' || CHANGE_BRANCH == 'master')
                  }
             }
 

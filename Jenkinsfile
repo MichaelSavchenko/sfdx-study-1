@@ -27,7 +27,6 @@ pipeline {
 
             steps {
                 script {
-                    sh 'echo $CHANGE_TARGET'
                     sh "echo ${env.CHANGE_BRANCH}"
                     env.SCRATCH_ORG_ALIAS = "Scratch-${env.BUILD_NUMBER}"
                     sh 'echo $SCRATCH_ORG_ALIAS'
@@ -65,7 +64,7 @@ pipeline {
 
         stage('Deploy to SandBox') {
             when {
-                branch 'master'
+                changeRequest target: 'master'
             }
             steps {
                 sh '$toolbelt/sfdx force:auth:jwt:grant --clientid $SANDBOX_CONNECTED_APP_CONSUMER_KEY --username $SANDBOX_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $SANDBOX_ALIAS'

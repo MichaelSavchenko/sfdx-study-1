@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent any //docker, kubernetes
 
     environment {
         toolbelt = tool 'sfdx'
@@ -38,7 +38,12 @@ pipeline {
 
         stage('Create Scratch Org') {
             when {
-                not { branch 'master' }
+                not {
+                    anyOf {
+                        branch "master"
+                        changeRequest target: 'master'
+                    }
+                }
             }
 
             steps {
@@ -54,7 +59,9 @@ pipeline {
 
         stage('Run tests on Scratch Org') {
             when {
-                 not { branch 'master' }
+                 expression {
+                     BRANCH_NAME =! 'master' || CHANGE_BRANCH != 'master'
+                 }
             }
 
             steps {

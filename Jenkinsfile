@@ -59,8 +59,11 @@ pipeline {
 
         stage('Run tests on Scratch Org') {
             when {
-                 expression {
-                     BRANCH_NAME =! 'master' || CHANGE_BRANCH != 'master'
+                 not {
+                     anyOf {
+                         branch "master"
+                         changeRequest target: 'master'
+                     }
                  }
             }
 

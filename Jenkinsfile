@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent any //docker, kubernetes
 
     environment {
         toolbelt = tool 'sfdx'

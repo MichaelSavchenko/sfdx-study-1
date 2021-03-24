@@ -57,7 +57,7 @@ pipeline {
             }
 
             steps {
-                sh '$toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 --resultformat tap --codecoverage'
+                sh '$toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 -c -r human'
             }
         }
 

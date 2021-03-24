@@ -38,8 +38,11 @@ pipeline {
 
         stage('Create Scratch Org') {
             when {
-                expression {
-                    "${env.BRANCH_NAME}" =! 'master' || "${env.CHANGE_BRANCH}" != 'master'
+                not {
+                    anyOf {
+                        branch "master"
+                        changeRequest target: 'master'
+                    }
                 }
             }
 
@@ -57,7 +60,7 @@ pipeline {
         stage('Run tests on Scratch Org') {
             when {
                  expression {
-                     "${env.BRANCH_NAME}" =! 'master' || "${env.CHANGE_BRANCH}" != 'master'
+                     BRANCH_NAME =! 'master' || CHANGE_BRANCH != 'master'
                  }
             }
 

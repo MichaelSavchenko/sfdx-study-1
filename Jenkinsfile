@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     sh 'echo $CHANGE_TARGET'
-                    sh 'echo ${env.CHANGE_TARGET}'
+                    sh "echo ${env.CHANGE_TARGET}"
                     env.SCRATCH_ORG_ALIAS = "Scratch-${env.BUILD_NUMBER}"
                     sh 'echo $SCRATCH_ORG_ALIAS'
                     sh '$toolbelt/sfdx force:auth:jwt:grant --clientid $CONNECTED_APP_CONSUMER_KEY --username $HUB_ORG --jwtkeyfile $jwt_key_file -d --instanceurl $SFDC_HOST -a $DEV_HUB_ALIAS --setdefaultdevhubusername'

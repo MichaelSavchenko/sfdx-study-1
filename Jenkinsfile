@@ -58,11 +58,14 @@ pipeline {
 
 
         stage('Run tests on Scratch Org') {
-            when {
-                 expression {
-                     BRANCH_NAME =! 'master' || CHANGE_BRANCH != 'master'
-                 }
-            }
+           when {
+               not {
+                   anyOf {
+                       branch "master"
+                       changeRequest target: 'master'
+                   }
+               }
+           }
 
             steps {
                 sh '$toolbelt/sfdx force:apex:test:run -u $SCRATCH_ORG_ALIAS --classnames AccountSearchControllerTest --wait 10 -c -r human'
